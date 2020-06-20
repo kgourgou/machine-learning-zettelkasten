@@ -11,7 +11,7 @@ Encoder](https://www.tensorflow.org/hub/tutorials/semantic_similarity_with_tf_hu
 model from tensorflow hub, then loads the markdown files, does some light
 preprocessing to get rid of LaTeX, urls, etc., and generates embeddings. With
 those, I can then compare the similarity of documents and create backlinks from
-one doc to the other. Then, I can jump from one doc to another while reading
+one doc to another. Then, I can jump between docs while reading
 with Typora.
 
 
