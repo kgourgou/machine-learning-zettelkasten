@@ -21,7 +21,6 @@ def embed(input):
 
 filenames = glob('../my-markdown-notes/*.md')
 filenames.remove('../my-markdown-notes/README.md')
-filenames
 
 # load docs into memory
 docs = []
@@ -29,7 +28,6 @@ for filename in filenames:
     f = open(filename, 'r')
     docs.append(f.read())
 
-clean_filenames = [name.split('/')[2].replace('.md', '') for name in filenames]
 
 # remove urls, LaTeX, frontmatter, etc. and get embeddings.
 new_docs = [preprocess(doc) for doc in docs]
