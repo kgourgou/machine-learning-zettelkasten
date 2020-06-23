@@ -15,5 +15,8 @@ one doc to another. Then, I can jump between docs while reading
 with Typora.
 
 
-The code is quite simple and `run_me.py` is the main script. I haven't tested a
-lot, so expect bugs. 
+The code is simple and `run_me.py` is the main script. Be sure to change the paths to where you have your own docs. 
+
+**This code overwrites the original markdown documents with no backup. Be sure to backup your docs before using.**
+
+I haven't tested a lot, so expect bugs. 
