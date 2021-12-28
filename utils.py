@@ -1,6 +1,8 @@
 import re
 import numpy as np
 
+TOLERANCE = 0.4
+
 
 def preprocess(doc):
     """
@@ -8,32 +10,36 @@ def preprocess(doc):
 
     Most of it is done through regular expressions.
     """
-    new_doc = doc.replace('\n', ' ')
+    new_doc = doc.replace("\n", " ")
 
     operations = [
-        r'\$\$(.+?)\$\$', r'\$(.+?)\$', r'\((.+?)\)', 'r\[(.+?)\]', r'\#',
-        r'---(.+?)---', r'[\*\-\_\\]', r'<[^>]*>'
+        r"\$\$(.+?)\$\$",
+        r"\$(.+?)\$",
+        r"\((.+?)\)",
+        "r\[(.+?)\]",
+        r"\#",
+        r"---(.+?)---",
+        r"[\*\-\_\\]",
+        r"<[^>]*>",
     ]
 
     for op in operations:
-        new_doc = re.sub(op, '', new_doc)
+        new_doc = re.sub(op, "", new_doc)
 
     return new_doc
 
 
 class DocSim:
-    def __init__(self, message_embeddings):
-        corr = np.inner(message_embeddings, message_embeddings)
+    def __init__(self, corr):
         np.fill_diagonal(corr, 0)  # fill diagonal with zeros.
         self.corr = corr
 
     def return_corr_docs(self, index):
         """
-        Returns top-5 correlated documents.
-
-        TODO threshold the correlation instead of returning top-5.
+        threshold the correlation matrix
         """
-        return self.corr[index, :].argsort()[::-1][0:5]
+        corr_above_treshold = self.corr[index, :] > TOLERANCE
+        return corr_above_treshold
 
     def build_graph(self, labels):
         """
@@ -44,12 +50,13 @@ class DocSim:
         """
         self.graph = {}
         for i, name in enumerate(labels):
+            to_add = self.return_corr_docs(i)
             self.graph[name] = [
-                labels[key] for key in self.return_corr_docs(i)
+                labels[key] for key in range(len(to_add)) if to_add[key]
             ]
 
 
-def add_links(doc, rel_links_text, link_section_name = "##### links"):
+def add_links(doc, rel_links_text, link_section_name="##### links"):
     """
     Add links to a doc. There is an assumption here
     that the link section will be placed at the
@@ -62,7 +69,7 @@ def add_links(doc, rel_links_text, link_section_name = "##### links"):
     link_index = doc.find(link_section_name)
     if link_index >= 0:
         # delete old links section
-        doc = doc.replace(doc[link_index:], '')
+        doc = doc.replace(doc[link_index:], "")
 
     # add new links
     return doc + f"\n{link_section_name}:\n" + rel_links_text
@@ -83,6 +90,6 @@ def make_text(rel_links):
 
     text = ""
     for link in rel_links:
-        filename = link.split('/')[-1]
-        text += f'link: [{filename}]({filename})\n'
+        filename = link.split("/")[-1]
+        text += f"link: [{filename}]({filename})\n"
     return text
