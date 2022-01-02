@@ -1,6 +1,5 @@
 """
-Parse a collection of markdown documents, get their embeddings from the
-universal sentence encoder, then add similar docs as backlinks at the end
+Parse a collection of markdown documents, get their cosine similarities, then add similar docs as backlinks at the end
 of each markdown document.
 """
 
